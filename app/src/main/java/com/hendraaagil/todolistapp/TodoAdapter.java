@@ -28,12 +28,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         void btnDoneClick(int position);
     }
 
+    public void setBtnDoneClick(OnBtnDoneClick btnDoneClick) {
+        this.btnDoneClick = btnDoneClick;
+    }
+
     public interface OnBtnEditClick {
         void btnEditClick(int position);
     }
 
+    public void setBtnEditClick(OnBtnEditClick btnEditClick) {
+        this.btnEditClick = btnEditClick;
+    }
+
     public interface OnBtnDeleteClick {
         void btnDeleteClick(int position);
+    }
+
+    public void setBtnDeleteClick(OnBtnDeleteClick btnDeleteClick) {
+        this.btnDeleteClick = btnDeleteClick;
     }
 
     public TodoAdapter(Context context, ArrayList<TodoItem> todoItems) {
@@ -60,9 +72,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.txtVwDateCompleted.setText("Completed At : " + formatDate(completed));
         holder.txtVwTodoName.setText(name);
         holder.btnDone.setEnabled(!isComplete);
+        holder.btnEdit.setEnabled(!isComplete);
 
         if (isComplete) {
             holder.btnDone.setBackgroundColor(Color.GRAY);
+            holder.btnEdit.setBackgroundColor(Color.GRAY);
         }
     }
 
@@ -99,15 +113,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             btnDelete = itemView.findViewById(R.id.btnDelete);
 
             btnDone.setOnClickListener(v -> {
-                System.out.println("Btn Done Clicked");
+                int position = getAdapterPosition();
+                if (btnDoneClick != null && position != RecyclerView.NO_POSITION) {
+                    btnDoneClick.btnDoneClick(position);
+                }
             });
 
             btnEdit.setOnClickListener(v -> {
-                System.out.println("Btn Edit Clicked");
+                int position = getAdapterPosition();
+                if (btnEditClick != null && position != RecyclerView.NO_POSITION) {
+                    btnEditClick.btnEditClick(position);
+                }
             });
 
             btnDelete.setOnClickListener(v -> {
-                System.out.println("Btn Delete Clicked");
+                int position = getAdapterPosition();
+                if (btnDeleteClick != null && position != RecyclerView.NO_POSITION) {
+                    btnDeleteClick.btnDeleteClick(position);
+                }
             });
         }
     }

@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -20,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TodoAdapter.OnBtnDoneClick, TodoAdapter.OnBtnEditClick, TodoAdapter.OnBtnDeleteClick {
     public JSONArray todos;
     public RecyclerView recyclerView;
     public TodoAdapter todoAdapter;
@@ -37,6 +39,32 @@ public class MainActivity extends AppCompatActivity {
         todoItems = new ArrayList<>();
 
         new getTodos().execute();
+
+        Button btnAdd = findViewById(R.id.btnAdd);
+        btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, AddActivity.class));
+        });
+    }
+
+    @Override
+    public void btnDoneClick(int position) {
+        TodoItem item = todoItems.get(position);
+
+        System.out.println(item.getName());
+    }
+
+    @Override
+    public void btnEditClick(int position) {
+        TodoItem item = todoItems.get(position);
+
+        System.out.println(item.getId());
+    }
+
+    @Override
+    public void btnDeleteClick(int position) {
+        TodoItem item = todoItems.get(position);
+
+        System.out.println(item.getId());
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -74,17 +102,21 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < todos.length(); i++) {
                     JSONObject todo = todos.getJSONObject(i);
 
+                    int id = todo.getInt("id");
                     String name = todo.getString("name");
-                    boolean isComplete = todo.getBoolean("isComplete");
                     String completedAt = todo.getString("completedAt");
+                    boolean isComplete = todo.getBoolean("isComplete");
 
                     System.out.println(completedAt);
 
-                    todoItems.add(new TodoItem(name, isComplete, completedAt));
+                    todoItems.add(new TodoItem(id, name, completedAt, isComplete));
                 }
 
                 todoAdapter = new TodoAdapter(MainActivity.this, todoItems);
                 recyclerView.setAdapter(todoAdapter);
+                todoAdapter.setBtnDoneClick(MainActivity.this);
+                todoAdapter.setBtnEditClick(MainActivity.this);
+                todoAdapter.setBtnDeleteClick(MainActivity.this);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
