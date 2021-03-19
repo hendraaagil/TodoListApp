@@ -2,6 +2,7 @@ package com.hendraaagil.todolistapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +75,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.txtVwTodoName.setText(name);
         holder.btnDone.setEnabled(!isComplete);
         holder.btnEdit.setEnabled(!isComplete);
+
+        if (isComplete) {
+            holder.btnDone.setBackgroundColor(Color.GRAY);
+            holder.btnEdit.setBackgroundColor(Color.GRAY);
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
