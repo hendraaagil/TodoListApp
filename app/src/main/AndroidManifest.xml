@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TodoListApp">
         <activity
+            android:name=".EditActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".AddActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">

@@ -2,7 +2,6 @@ package com.hendraaagil.todolistapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +26,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     private OnBtnDeleteClick btnDeleteClick;
 
     public interface OnBtnDoneClick {
-        void btnDoneClick(int position);
+        void btnDoneClick(int position) throws JSONException;
     }
 
     public void setBtnDoneClick(OnBtnDoneClick btnDoneClick) {
@@ -73,11 +74,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         holder.txtVwTodoName.setText(name);
         holder.btnDone.setEnabled(!isComplete);
         holder.btnEdit.setEnabled(!isComplete);
-
-        if (isComplete) {
-            holder.btnDone.setBackgroundColor(Color.GRAY);
-            holder.btnEdit.setBackgroundColor(Color.GRAY);
-        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -86,7 +82,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         String newDate = "-";
         if (date != null) {
             try {
-                Date date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
+                Date date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(date);
                 newDate = new SimpleDateFormat("yyyy-MM-dd").format(date1);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -115,7 +111,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             btnDone.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (btnDoneClick != null && position != RecyclerView.NO_POSITION) {
-                    btnDoneClick.btnDoneClick(position);
+                    try {
+                        btnDoneClick.btnDoneClick(position);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
